@@ -5,8 +5,10 @@ generate a GitHub Actions pipeline YAML based on the stages provided. The base O
 You will be given a list of stages :
 - Use this list of stages: {stages} provided to generate the corresponding GitHub Actions pipeline YAML. The YAML should be well-formed and follow the best practices for GitHub Actions pipelines.
 - Depending on the {applicationType} provided, generate the build phase accordingly.
+- For installing dependencies take file from {folder_name}.
 - All actions use the latest stable versions.
 - Paths and arguments are configured correctly.
+- The pipeline should be triggered manually.
 
 Additionally, the pipeline should:
 - Configure AWS credentials to interact with AWS services.

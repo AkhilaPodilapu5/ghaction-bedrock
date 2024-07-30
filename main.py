@@ -36,7 +36,7 @@ model_version_id = BEDROCK_MODEL_ID
 cl_llm = create_bedrock_llm(get_bedrock_client(region), model_version_id)
 
 review_multi_var_prompt = PromptTemplate(
-    input_variables=["stages", "applicationType"], 
+    input_variables=["stages", "applicationType", "folder_name"], 
     template=REVIEW_MULTIVARPROMPT
 )
 review_output_format = REVIEW_PROMPT_OUTPUT_FORMAT
@@ -61,7 +61,7 @@ async def create_file(
     folder_name: str = Query(None,description="provide folder name to create or update")
 ) -> JSONResponse:
     try:
-        prompt = review_multi_var_prompt.format(stages=stages, applicationType=applicationTechnology, format=review_output_format)
+        prompt = review_multi_var_prompt.format(stages=stages, applicationType=applicationTechnology,folder_name=folder_name, format=review_output_format)
         solution = cl_llm(prompt)
         
         #print(f"raw response is: {solution}")
@@ -74,10 +74,10 @@ async def create_file(
         if repo_url.endswith('.git'):
             repo_url = repo_url[:-4]
         owner, repo = parse_repo_url(repo_url)
-        if folder_name:
-            file_path = f"{folder_name}/{file_name}.yaml"
-        else:
-            file_path = f".github/workflows/{file_name}.yaml"
+        # if folder_name:
+        #     file_path = f"{folder_name}/{file_name}.yaml"
+        # else:
+        file_path = f".github/workflows/{file_name}.yaml"
         api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_path}?ref={branch}"
 
         headers = {
