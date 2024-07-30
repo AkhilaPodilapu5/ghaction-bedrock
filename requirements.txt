@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+boto3
+langchain
+pydantic
+langchain-community
+pyyaml
