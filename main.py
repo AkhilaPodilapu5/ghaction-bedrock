@@ -57,7 +57,8 @@ async def create_file(
     github_token: str = Query(..., description="provide github token to create or update file"),
     stages: str = Query(..., description="provide stages that should be included in pipeline"),
     applicationTechnology: str = Query(..., description="provide application type"),
-    file_name: str = Query(..., description="provide file name to create or update")
+    file_name: str = Query(..., description="provide file name to create or update"),
+    folder_name: str = Query(None,description="provide folder name to create or update")
 ) -> JSONResponse:
     try:
         prompt = review_multi_var_prompt.format(stages=stages, applicationType=applicationTechnology, format=review_output_format)
@@ -70,8 +71,13 @@ async def create_file(
         result = match.group(1)
         print(result)
         file_content = result
+        if repo_url.endswith('.git'):
+            repo_url = repo_url[:-4]
         owner, repo = parse_repo_url(repo_url)
-        file_path = f".github/workflows/{file_name}.yaml"
+        if folder_name:
+            file_path = f"{folder_name}/{file_name}.yaml"
+        else:
+            file_path = f".github/workflows/{file_name}.yaml"
         api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_path}?ref={branch}"
 
         headers = {
